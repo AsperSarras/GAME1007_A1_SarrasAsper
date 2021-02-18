@@ -72,19 +72,22 @@ void GameState::Update()
 		StateManager::PushState(new PauseState());//Add New PauseState
 	//m_box.x += 50.0f * Engine::Instance().m_deltaTime; //50 pixel per sec
 
-	if ((Engine::Instance().KeyDown(SDL_SCANCODE_SPACE) && (m_player.alive == true)))
+	if (Engine::Instance().getFps() == 17)
+	{
+		timer++;
+		CdTimer++;
+	}
+	
+	if ((Engine::Instance().KeyDown(SDL_SCANCODE_SPACE) && (CdTimer>50)))
 	{
 			//Spawn bullet
 			m_bullets.push_back(new Bullet({ m_player.m_dst.x + 140,m_player.m_dst.y + 150 }));
 			m_bullets.push_back(new Bullet({ m_player.m_dst.x + 140,m_player.m_dst.y + 62 }));				m_bullets.shrink_to_fit();
 			cout << m_bullets.capacity() << endl;
 			Mix_PlayChannel(-1, m_PShot, 0);
+			CdTimer = 0;
 	}
 
-	if (Engine::Instance().getFps() == 17)
-	{
-		timer++;
-	}
 	//Background
 	m_bg.m_dst.x -= m_speed;
 	m_bg2.m_dst.x -= m_speed;

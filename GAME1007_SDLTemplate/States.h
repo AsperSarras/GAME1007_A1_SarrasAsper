@@ -59,6 +59,7 @@ private:
 	Player m_player;
 	int m_speed = 5; //In-Class Initialization, not normal.
 	int timer = 0;
+	int CdTimer = 0;
 	vector<Bullet*> m_bullets;
 	vector<Enemy*> m_enemy;
 	vector<enBullet*> m_eBullet;

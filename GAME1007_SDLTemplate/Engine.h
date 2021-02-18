@@ -26,6 +26,8 @@ class Player : public Sprite
 public:
 
 	bool alive = true;
+	bool CD = false;
+	int count = 0;
 
 	Player() {
 		m_src = { 0,0,826,682 };
