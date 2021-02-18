@@ -354,7 +354,7 @@ void LoseState::Enter()
 
 void LoseState::Update()
 {
-	if (Engine::Instance().KeyDown(SDL_SCANCODE_X))
+	if (Engine::Instance().KeyDown(SDL_SCANCODE_Z))
 		StateManager::ChangeState(new TitleState());// Action to change state
 }
 
