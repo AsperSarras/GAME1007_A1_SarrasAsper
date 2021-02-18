@@ -55,7 +55,5 @@ void StateManager::Quit()
 		s_states.pop_back();
 	}
 }
-
 vector<State*>& StateManager::GetStates() { return s_states; }
-
 vector<State*> StateManager::s_states;
