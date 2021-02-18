@@ -178,6 +178,9 @@ public: // public method prototypes.
 	SDL_Renderer* getRenderer() { return m_pRenderer; }
 	bool KeyDown(SDL_Scancode c);
 	float m_deltaTime;
+	Uint32 getFps() { return m_fps; }
+	bool& Running();
+	void SetRunning(const bool b);
 	
 	/*bool colDet(SDL_Rect a, SDL_Rect b)
 	{

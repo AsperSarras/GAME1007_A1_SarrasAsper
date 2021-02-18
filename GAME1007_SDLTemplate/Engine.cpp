@@ -37,16 +37,16 @@ int Engine::Init(const char* title, int xPos, int yPos, int width, int height, i
 				//}
 				//else return false; //Image init faliled.
 				//
-				if (Mix_Init(MIX_INIT_MP3) != 0)
-				{
-					Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 2048);
-					Mix_AllocateChannels(16);
-					m_PShot = Mix_LoadWAV("aud/pShoot1.wav");
-					m_EShot = Mix_LoadWAV("aud/eShoot1.wav");
-					m_Explosion = Mix_LoadWAV("aud/Exp.wav");
-					m_Bgm = Mix_LoadMUS("aud/Bgm.mp3");
-				}
-				else return false; //Mixer init failed.
+				//if (Mix_Init(MIX_INIT_MP3) != 0)
+				//{
+				//	Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 2048);
+				//	Mix_AllocateChannels(16);
+				//	m_PShot = Mix_LoadWAV("aud/pShoot1.wav");
+				//	m_EShot = Mix_LoadWAV("aud/eShoot1.wav");
+				//	m_Explosion = Mix_LoadWAV("aud/Exp.wav");
+				//	m_Bgm = Mix_LoadMUS("aud/Bgm.mp3");
+				//}
+				//else return false; //Mixer init failed.
 			}
 			else return false; // Renderer creation failed.
 		}
@@ -57,11 +57,11 @@ int Engine::Init(const char* title, int xPos, int yPos, int width, int height, i
 	m_keystates = SDL_GetKeyboardState(nullptr);
 	m_startLast = SDL_GetTicks();
 	StateManager::PushState(new TitleState());
-	m_bg = { {0,0,1024,768}, {0,0,1024,768} };
+	/*m_bg = { {0,0,1024,768}, {0,0,1024,768} };
 	m_bg2 = { {0,0,1024,768}, {1024,0,1024,768} };
 	cout << "Initialization successful!" << endl;
 	Mix_PlayMusic(m_Bgm, -1);
-	Mix_VolumeMusic(20);
+	Mix_VolumeMusic(20);*/
 	m_running = true;
 	return true;
 }
@@ -332,35 +332,43 @@ void Engine::Clean()
 {
 	cout << "Cleaning engine..." << endl;
 	StateManager::Quit();
-	for (unsigned i = 0; i < m_bullets.size(); i++) {
-		delete m_bullets[i]; //Flag for re alocation
-		m_bullets[i] = nullptr; //Wrangle your dangle(?)
-	}
-	m_bullets.clear(); //Wipe out all elements on a vector but leaves capacity (if 10 bullets were shot the elements would be 0 but the capacity will be 10)
-	m_bullets.shrink_to_fit(); //Reduces capacity to size (if it has 0 elements capacity will turn to 0)
-	for (unsigned i = 0; i < m_eBullet.size(); i++) {
-		delete m_eBullet[i]; //Flag for re alocation
-		m_eBullet[i] = nullptr; //Wrangle your dangle(?)
-	}
-	m_bullets.clear(); //Wipe out all elements on a vector but leaves capacity (if 10 bullets were shot the elements would be 0 but the capacity will be 10)
-	m_bullets.shrink_to_fit(); //Reduces capacity to size (if it has 0 elements capacity will turn to 0)
-	for (unsigned i = 0; i < m_enemy.size(); i++) {
-		delete m_enemy[i]; //Flag for re alocation
-		m_enemy[i] = nullptr; //Wrangle your dangle(?)
-	}
-	m_enemy.clear(); //Wipe out all elements on a vector but leaves capacity (if 10 bullets were shot the elements would be 0 but the capacity will be 10)
-	m_enemy.shrink_to_fit(); //Reduces capacity to size (if it has 0 elements capacity will turn to 0)
+	//for (unsigned i = 0; i < m_bullets.size(); i++) {
+	//	delete m_bullets[i]; //Flag for re alocation
+	//	m_bullets[i] = nullptr; //Wrangle your dangle(?)
+	//}
+	//m_bullets.clear(); //Wipe out all elements on a vector but leaves capacity (if 10 bullets were shot the elements would be 0 but the capacity will be 10)
+	//m_bullets.shrink_to_fit(); //Reduces capacity to size (if it has 0 elements capacity will turn to 0)
+	//for (unsigned i = 0; i < m_eBullet.size(); i++) {
+	//	delete m_eBullet[i]; //Flag for re alocation
+	//	m_eBullet[i] = nullptr; //Wrangle your dangle(?)
+	//}
+	//m_bullets.clear(); //Wipe out all elements on a vector but leaves capacity (if 10 bullets were shot the elements would be 0 but the capacity will be 10)
+	//m_bullets.shrink_to_fit(); //Reduces capacity to size (if it has 0 elements capacity will turn to 0)
+	//for (unsigned i = 0; i < m_enemy.size(); i++) {
+	//	delete m_enemy[i]; //Flag for re alocation
+	//	m_enemy[i] = nullptr; //Wrangle your dangle(?)
+	//}
+	//m_enemy.clear(); //Wipe out all elements on a vector but leaves capacity (if 10 bullets were shot the elements would be 0 but the capacity will be 10)
+	//m_enemy.shrink_to_fit(); //Reduces capacity to size (if it has 0 elements capacity will turn to 0)
 	SDL_DestroyRenderer(m_pRenderer);
 	SDL_DestroyWindow(m_pWindow);
-	SDL_DestroyTexture(m_pBGTexture);
-	SDL_DestroyTexture(m_pTexture);
-	Mix_FreeChunk(m_PShot);
-	Mix_FreeChunk(m_EShot);
-	Mix_FreeChunk(m_Explosion);
-	Mix_FreeMusic(m_Bgm);
+	//SDL_DestroyTexture(m_pBGTexture);
+	//SDL_DestroyTexture(m_pTexture);
+	//Mix_FreeChunk(m_PShot);
+	//Mix_FreeChunk(m_EShot);
+	//Mix_FreeChunk(m_Explosion);
+	//Mix_FreeMusic(m_Bgm);
 	TextureManager::Quit();
 	IMG_Quit();
 	SDL_Quit();
 }
 
+bool& Engine::Running()
+{
+	return m_running;
+}
 
+void Engine::SetRunning(const bool b)
+{
+	m_running = b;
+}

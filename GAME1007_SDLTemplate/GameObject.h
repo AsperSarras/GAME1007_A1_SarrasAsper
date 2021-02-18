@@ -7,7 +7,7 @@
 class GameObject
 {
 public: // Methods.
-	virtual int Update() = 0;
+	virtual void Update() = 0;
 	virtual void Render() = 0;
 	SDL_FRect* GetDst() { return &m_dst; }
 protected: // Attributes.
