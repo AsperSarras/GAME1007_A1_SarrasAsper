@@ -71,4 +71,15 @@ private:
 	Mix_Music* m_Bgm;
 
 };
+
+class LoseState : public State
+{
+public:
+	LoseState();
+	virtual void Enter();
+	virtual void Update();
+	virtual void Render();
+	virtual void Exit();
+
+};
 #endif

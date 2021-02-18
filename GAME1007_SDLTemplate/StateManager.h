@@ -11,15 +11,17 @@ class StateManager
 {
 private: //Properties
 	static vector<State*>s_states;
+	static bool s_stateChange;
 
 public: //Methods
 	static void Update();
 	static void Render();
-	static void PushState(State* pState);	//Used when going to pause state
-	static void PopState(); //Used when leaving pause state
+	static void PushState(State* pState);	
+	static void PopState(); 
 	static void ChangeState(State* pState);
-	static void Quit(); //Clean up
-	static vector<State*>& GetStates(); //Return a reference to our State* vector
+	static void Quit(); 
+	static vector<State*>& GetStates(); 
+	static const bool StateChanging();
 	
 
 private: //Methods

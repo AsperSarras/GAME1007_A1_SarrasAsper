@@ -57,3 +57,6 @@ void StateManager::Quit()
 }
 vector<State*>& StateManager::GetStates() { return s_states; }
 vector<State*> StateManager::s_states;
+
+bool StateManager::s_stateChange = false;
+const bool StateManager::StateChanging() { return s_stateChange; }

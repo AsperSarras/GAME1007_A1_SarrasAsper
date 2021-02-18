@@ -1,6 +1,9 @@
 ﻿#include "States.h"
+
+#include "Button.h"
 #include "Engine.h"
 #include "StateManager.h"
+#include "TextureManager.h"
 
 void State::Render()
 {
@@ -15,12 +18,20 @@ TitleState::TitleState(){}
 void TitleState::Enter()
 {
 	cout << "Entering Title state" << endl;
+	TextureManager::Load("img/Start.png", "start");
+	m_objects.emplace("start", new PlayButton({ 0,0,400,100 }, { 312,100,400,100 }, "start"));
 }
 
 void TitleState::Update()
 {
 	if (Engine::Instance().KeyDown(SDL_SCANCODE_N))
 		StateManager::ChangeState(new GameState());// Action to change state
+	//Throws tree problem
+	//for (auto const& i : m_objects)
+	//{
+	//	i.second->Update();	
+	//	if (StateManager::StateChanging()) return;
+	//}
 }
 
 void TitleState::Render()
@@ -28,12 +39,21 @@ void TitleState::Render()
 	cout << "Rendering Title state" << endl;
 	SDL_SetRenderDrawColor(Engine::Instance().getRenderer(), 255, 0, 255, 255);
 	SDL_RenderClear(Engine::Instance().getRenderer());
+	for (auto const& i : m_objects)
+		i.second->Render();
 	State::Render(); 
 }
 
 void TitleState::Exit()
 {
 	cout << "Exiting Title state" << endl;
+	TextureManager::Unload("start");
+	for (auto& i : m_objects)
+	{
+		delete i.second;
+		i.second = nullptr;
+	}
+	m_objects.clear();
 }
 
 //End Title State
@@ -146,7 +166,6 @@ void GameState::Update()
 				m_enemy[u] = nullptr; //Wrangle your dangle(?)
 				m_enemy.erase(m_enemy.begin() + u);
 				m_enemy.shrink_to_fit();
-
 				Mix_PlayChannel(-1, m_Explosion, 0);
 				break;
 
@@ -176,6 +195,8 @@ void GameState::Update()
 			SDL_DestroyTexture(m_pTexture);
 			Mix_PlayChannel(-1, m_Explosion, 0);
 			m_player.alive = false;
+			StateManager::ChangeState(new LoseState());// Action to change state
+			
 			break;
 		}
 	}
@@ -216,6 +237,8 @@ void GameState::Update()
 				SDL_DestroyTexture(m_pTexture);
 				Mix_PlayChannel(-1, m_Explosion, 0);
 				m_player.alive = false;
+				StateManager::ChangeState(new LoseState());// Action to change state
+				
 				break;
 			}
 		}
@@ -225,13 +248,13 @@ void GameState::Update()
 void GameState::Render()
 {
 	cout << "Rendering Game state" << endl;
-	SDL_SetRenderDrawColor(Engine::Instance().getRenderer(), 0, 0, 255, 255);
-	SDL_RenderClear(Engine::Instance().getRenderer());
+	//SDL_SetRenderDrawColor(Engine::Instance().getRenderer(), 0, 0, 255, 255);
+	//SDL_RenderClear(Engine::Instance().getRenderer());
 	//SDL_SetRenderDrawColor(Engine::Instance().getRenderer(), 255, 255, 255, 255);
 	//SDL_RenderFillRectF(Engine::Instance().getRenderer(), &m_box);
 
-	SDL_SetRenderDrawColor(Engine::Instance().getRenderer(), 0, 128, 255, 255);
-	SDL_RenderClear(Engine::Instance().getRenderer());
+	//SDL_SetRenderDrawColor(Engine::Instance().getRenderer(), 0, 128, 255, 255);
+	//SDL_RenderClear(Engine::Instance().getRenderer());
 	SDL_RenderCopy(Engine::Instance().getRenderer(), m_pBGTexture, &m_bg.m_src, &m_bg.m_dst);
 	SDL_RenderCopy(Engine::Instance().getRenderer(), m_pBGTexture, &m_bg2.m_src, &m_bg2.m_dst);
 
@@ -319,5 +342,40 @@ void PauseState::Render()
 
 void PauseState::Exit()
 {
-	cout << "Exiting Pause state" << endl;
+
+}
+
+LoseState::LoseState() {}
+
+void LoseState::Enter()
+{
+	cout << "Entering Lose state" << endl;
+}
+
+void LoseState::Update()
+{
+	if (Engine::Instance().KeyDown(SDL_SCANCODE_X))
+		StateManager::ChangeState(new TitleState());// Action to change state
+}
+
+void LoseState::Render()
+{
+	cout << "Rendering Title state" << endl;
+	SDL_SetRenderDrawColor(Engine::Instance().getRenderer(), 255, 255, 255, 255);
+	SDL_RenderClear(Engine::Instance().getRenderer());
+	//for (auto const& i : m_objects)
+	//	i.second->Render();
+	State::Render();
+}
+
+void LoseState::Exit()
+{
+	cout << "Exiting Title state" << endl;
+	//TextureManager::Unload("start");
+	//for (auto& i : m_objects)
+	//{
+	//	delete i.second;
+	//	i.second = nullptr;
+	//}
+	//m_objects.clear();
 }
