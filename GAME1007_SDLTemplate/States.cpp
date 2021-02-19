@@ -34,8 +34,11 @@ void TitleState::Enter()
 void TitleState::Update()
 {
 	if (Engine::Instance().KeyDown(SDL_SCANCODE_N))
+	{
 		StateManager::ChangeState(new GameState());// Action to change state
-	//Throws tree problem
+		if (StateManager::StateChanging()) return;
+	}
+		//Throws tree problem
 	for (auto const& i : m_objects)
 	{
 		i.second->Update();	
@@ -97,9 +100,12 @@ void GameState::Enter()
 void GameState::Update()
 {
 	if (Engine::Instance().KeyDown(SDL_SCANCODE_X))
+	{
 		StateManager::ChangeState(new TitleState());// Action to change state
+		if (StateManager::StateChanging()) return;
+	}
 	else if (Engine::Instance().KeyDown(SDL_SCANCODE_P))
-		StateManager::PushState(new PauseState());//Add New PauseState
+	StateManager::PushState(new PauseState());//Add New PauseState
 
 	if (Engine::Instance().getFps() == 17)
 	{
@@ -340,8 +346,11 @@ void PauseState::Enter()
 
 void PauseState::Update()
 {
-	if (Engine::Instance().KeyDown(SDL_SCANCODE_O))
-	StateManager::PopState();
+	if (Engine::Instance().KeyDown(SDL_SCANCODE_R))
+	{
+		StateManager::PopState();
+		if (StateManager::StateChanging()) return;
+	}
 	for (auto const& i : m_objects)
 	{
 		i.second->Update();
@@ -397,9 +406,12 @@ void LoseState::Enter()
 
 void LoseState::Update()
 {
-	if (Engine::Instance().KeyDown(SDL_SCANCODE_Z))
+	if (Engine::Instance().KeyDown(SDL_SCANCODE_M))
+	{
 		StateManager::ChangeState(new TitleState());// Action to change state
-	for (auto const& i : m_objects)
+		if (StateManager::StateChanging()) return;
+	}
+		for (auto const& i : m_objects)
 	{
 		i.second->Update();
 		if (StateManager::StateChanging()) return;
@@ -431,11 +443,4 @@ void LoseState::Exit()
 	}
 	m_objects.clear();
 	Mix_FreeMusic(m_LBgm);
-	//TextureManager::Unload("start");
-	//for (auto& i : m_objects)
-	//{
-	//	delete i.second;
-	//	i.second = nullptr;
-	//}
-	//m_objects.clear();
 }
