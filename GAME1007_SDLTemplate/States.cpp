@@ -36,11 +36,11 @@ void TitleState::Update()
 	if (Engine::Instance().KeyDown(SDL_SCANCODE_N))
 		StateManager::ChangeState(new GameState());// Action to change state
 	//Throws tree problem
-	//for (auto const& i : m_objects)
-	//{
-	//	i.second->Update();	
-	//	if (StateManager::StateChanging()) return;
-	//}
+	for (auto const& i : m_objects)
+	{
+		i.second->Update();	
+		if (StateManager::StateChanging()) return;
+	}
 }
 
 void TitleState::Render()
@@ -77,8 +77,6 @@ GameState::GameState(){}
 void GameState::Enter()
 {
 	cout << "Entering Game state" << endl;
-	/*m_box = { 100.0f,300.0f,50.0f,	50.0f };*/
-
 	m_pBGTexture = IMG_LoadTexture(Engine::Instance().getRenderer(), "img/nBG.png");
 	m_pTexture = IMG_LoadTexture(Engine::Instance().getRenderer(), "img/ship3.png");
 	m_pEText = IMG_LoadTexture(Engine::Instance().getRenderer(), "img/ship.png");
@@ -102,7 +100,6 @@ void GameState::Update()
 		StateManager::ChangeState(new TitleState());// Action to change state
 	else if (Engine::Instance().KeyDown(SDL_SCANCODE_P))
 		StateManager::PushState(new PauseState());//Add New PauseState
-	//m_box.x += 50.0f * Engine::Instance().m_deltaTime; //50 pixel per sec
 
 	if (Engine::Instance().getFps() == 17)
 	{
@@ -214,7 +211,6 @@ void GameState::Update()
 			SDL_DestroyTexture(m_pTexture);
 			Mix_PlayChannel(-1, m_Explosion, 0);
 			m_player.alive = false;
-			//StateManager::ChangeState(new LoseState());// Action to change state
 			
 			break;
 		}
@@ -256,7 +252,6 @@ void GameState::Update()
 				SDL_DestroyTexture(m_pTexture);
 				Mix_PlayChannel(-1, m_Explosion, 0);
 				m_player.alive = false;
-				//StateManager::ChangeState(new LoseState());// Action to change state
 				
 				break;
 			}
@@ -274,13 +269,7 @@ void GameState::Update()
 void GameState::Render()
 {
 	cout << "Rendering Game state" << endl;
-	//SDL_SetRenderDrawColor(Engine::Instance().getRenderer(), 0, 0, 255, 255);
-	//SDL_RenderClear(Engine::Instance().getRenderer());
-	//SDL_SetRenderDrawColor(Engine::Instance().getRenderer(), 255, 255, 255, 255);
-	//SDL_RenderFillRectF(Engine::Instance().getRenderer(), &m_box);
 
-	//SDL_SetRenderDrawColor(Engine::Instance().getRenderer(), 0, 128, 255, 255);
-	//SDL_RenderClear(Engine::Instance().getRenderer());
 	SDL_RenderCopy(Engine::Instance().getRenderer(), m_pBGTexture, &m_bg.m_src, &m_bg.m_dst);
 	SDL_RenderCopy(Engine::Instance().getRenderer(), m_pBGTexture, &m_bg2.m_src, &m_bg2.m_dst);
 
@@ -346,13 +335,18 @@ void PauseState::Enter()
 {
 	cout << "Entering Pause state" << endl;
 	TextureManager::Load("img/Resume.png", "Resume");
-	m_objects.emplace("Resume", new PlayButton({ 0,0,400,100 }, { 312,500,400,100 }, "Resume"));
+	m_objects.emplace("Resume", new ResumeButton({ 0,0,400,100 }, { 312,500,400,100 }, "Resume"));
 }
 
 void PauseState::Update()
 {
 	if (Engine::Instance().KeyDown(SDL_SCANCODE_O))
 	StateManager::PopState();
+	for (auto const& i : m_objects)
+	{
+		i.second->Update();
+		if (StateManager::StateChanging()) return;
+	}
 }
 
 void PauseState::Render()
@@ -389,7 +383,7 @@ void LoseState::Enter()
 	cout << "Entering Title state" << endl;
 	m_lBackG = IMG_LoadTexture(Engine::Instance().getRenderer(), "img/fBG.png");
 	TextureManager::Load("img/MM.png", "Mm");
-	m_objects.emplace("Mm", new PlayButton({ 0,0,400,100 }, { 312,100,400,100 }, "Mm"));
+	m_objects.emplace("Mm", new MainButton({ 0,0,400,100 }, { 312,100,400,100 }, "Mm"));
 
 	m_lBg = { {0,0,1024,768}, {0,0,1024,768} };
 
@@ -405,6 +399,11 @@ void LoseState::Update()
 {
 	if (Engine::Instance().KeyDown(SDL_SCANCODE_Z))
 		StateManager::ChangeState(new TitleState());// Action to change state
+	for (auto const& i : m_objects)
+	{
+		i.second->Update();
+		if (StateManager::StateChanging()) return;
+	}
 }
 
 void LoseState::Render()

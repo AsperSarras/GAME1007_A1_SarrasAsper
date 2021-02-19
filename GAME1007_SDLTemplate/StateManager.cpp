@@ -2,6 +2,7 @@
 
 void StateManager::Update() //Invokes Update() of the current state
 {
+	s_stateChange = false;
 	if (!s_states.empty())
 		s_states.back()->Update(); //s_states.back() represent the current state by pointer
 }
@@ -20,6 +21,7 @@ void StateManager::PushState(State* pState) //Invoked going to Pause state from 
 
 void StateManager::PopState() //Invoked going back to Play state from Pause state
 {
+	s_stateChange = true;
 	if (s_states.size()<=1) return;//if only one state in vector, return
 	if (!s_states.empty())
 	{
@@ -33,6 +35,7 @@ void StateManager::PopState() //Invoked going back to Play state from Pause stat
 
 void StateManager::ChangeState(State* pState)
 {
+	s_stateChange = true;
 	if (!s_states.empty())
 	{
 		s_states.back()->Exit();

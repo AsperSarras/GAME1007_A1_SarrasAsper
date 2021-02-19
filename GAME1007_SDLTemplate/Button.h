@@ -1,10 +1,6 @@
 ﻿#pragma once
 #ifndef _BUTTON_
 #define _BUTTON_
-#include <string>
-#include "SDL.h"
-//#include "GameOb"
-
 
 #include <string>
 #include "SDL.h"
@@ -29,6 +25,22 @@ private:
 	void Execute();
 public:
 	PlayButton(SDL_Rect s, SDL_FRect d, const char* k);
+};
+
+class ResumeButton : public Button
+{
+private:
+	void Execute();
+public:
+	ResumeButton(SDL_Rect s, SDL_FRect d, const char* k);
+};
+
+class MainButton : public Button
+{
+private:
+	void Execute();
+public:
+	MainButton(SDL_Rect s, SDL_FRect d, const char* k);
 };
 
 

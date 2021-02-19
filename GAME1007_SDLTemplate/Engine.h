@@ -66,8 +66,6 @@ public:
 
 class Bullet : public Sprite
 {
-private:
-	//SDL_Rect m_Rect; // Single rectangle for destination.
 public:
 	Bullet(SDL_Point spawnLoc = { 512,384 }) //Non default constructor.
 	{
@@ -82,11 +80,7 @@ public:
 	{
 		cout << "De-alocating bullet at " << &(*this) << endl;
 	}
-	//void SetLoc(SDL_Point loc)
-	//{
-	//	m_Rect.x = loc.x;
-	//	m_Rect.y = loc.y;
-	//}
+
 	void Update()
 	{
 		this->m_Rect.x += 10;//Number is translation
@@ -183,47 +177,6 @@ public: // public method prototypes.
 	Uint32 getFps() { return m_fps; }
 	bool& Running();
 	void SetRunning(const bool b);
-	
-	/*bool colDet(SDL_Rect a, SDL_Rect b)
-	{
-		int leftA, leftB,
-			rightA, rightB,
-			topA, topB,
-			bottomA, bottomB;
-
-		leftA = a.x;
-		rightA = a.x + a.w;
-		topA = a.y;
-		bottomA = a.y + a.h;
-
-		leftB = b.x;
-		rightB = b.x + b.w;
-		topB = b.y;
-		bottomB = b.y + b.h;
-
-		if (bottomA <= topB)
-		{
-			return false;
-		}
-
-		if (topA >= bottomB)
-		{
-			return false;
-		}
-
-		if (rightA <= leftB)
-		{
-			return false;
-		}
-
-		if (leftA >= rightB)
-		{
-			return false;
-		}
-		
-		return true;
-	}*/
-//const int gEnmSpawnFrame = 70;
 };
 
 #endif

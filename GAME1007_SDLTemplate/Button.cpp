@@ -46,3 +46,17 @@ void PlayButton::Execute()
 {
 	StateManager::ChangeState(new GameState());
 }
+
+void ResumeButton::Execute()
+{
+	StateManager::PopState();
+}
+
+ResumeButton::ResumeButton(SDL_Rect s, SDL_FRect d, const char* k) :Button(s, d, k) {}
+
+void MainButton::Execute()
+{
+	StateManager::ChangeState(new TitleState());
+}
+
+MainButton::MainButton(SDL_Rect s, SDL_FRect d, const char* k) :Button(s, d, k) {}
