@@ -29,7 +29,11 @@ public:
 	virtual void Update();
 	virtual void Render();
 	virtual void Exit();
-	
+private:
+	SDL_Texture* m_tBackG;
+	Sprite m_tBg;
+
+	Mix_Music* m_TBgm;
 };
 
 class PauseState : public State
@@ -60,6 +64,7 @@ private:
 	int m_speed = 5; //In-Class Initialization, not normal.
 	int timer = 0;
 	int CdTimer = 0;
+	int ChngTimer = 0;
 	vector<Bullet*> m_bullets;
 	vector<Enemy*> m_enemy;
 	vector<enBullet*> m_eBullet;
@@ -80,6 +85,11 @@ public:
 	virtual void Update();
 	virtual void Render();
 	virtual void Exit();
+private:
+	SDL_Texture* m_lBackG;
+	Sprite m_lBg;
+
+	Mix_Music* m_LBgm;
 
 };
 #endif

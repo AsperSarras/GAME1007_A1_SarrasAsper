@@ -18,8 +18,17 @@ TitleState::TitleState(){}
 void TitleState::Enter()
 {
 	cout << "Entering Title state" << endl;
-	TextureManager::Load("img/Start.png", "start");
-	m_objects.emplace("start", new PlayButton({ 0,0,400,100 }, { 312,100,400,100 }, "start"));
+	m_tBackG = IMG_LoadTexture(Engine::Instance().getRenderer(), "img/lBG.png");
+	TextureManager::Load("img/StartGame.png", "start");
+	m_objects.emplace("start", new PlayButton({ 0,0,400,100 }, { 312,500,400,100 }, "start"));
+	m_tBg = { {0,0,1024,768}, {0,0,1024,768} };
+
+	Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 2048);
+	Mix_AllocateChannels(16);
+	m_TBgm = Mix_LoadMUS("aud/TBgm.mp3");
+	
+	Mix_PlayMusic(m_TBgm, -1);
+	Mix_VolumeMusic(40);
 }
 
 void TitleState::Update()
@@ -37,8 +46,9 @@ void TitleState::Update()
 void TitleState::Render()
 {
 	cout << "Rendering Title state" << endl;
-	SDL_SetRenderDrawColor(Engine::Instance().getRenderer(), 255, 0, 255, 255);
-	SDL_RenderClear(Engine::Instance().getRenderer());
+	//SDL_SetRenderDrawColor(Engine::Instance().getRenderer(), 255, 0, 255, 255);
+	//SDL_RenderClear(Engine::Instance().getRenderer());
+	SDL_RenderCopy(Engine::Instance().getRenderer(), m_tBackG, &m_tBg.m_src, &m_tBg.m_dst);
 	for (auto const& i : m_objects)
 		i.second->Render();
 	State::Render(); 
@@ -47,6 +57,7 @@ void TitleState::Render()
 void TitleState::Exit()
 {
 	cout << "Exiting Title state" << endl;
+	SDL_DestroyTexture(m_tBackG);
 	TextureManager::Unload("start");
 	for (auto& i : m_objects)
 	{
@@ -54,6 +65,7 @@ void TitleState::Exit()
 		i.second = nullptr;
 	}
 	m_objects.clear();
+	Mix_FreeMusic(m_TBgm);
 }
 
 //End Title State
@@ -81,7 +93,7 @@ void GameState::Enter()
 	m_bg = { {0,0,1024,768}, {0,0,1024,768} };
 	m_bg2 = { {0,0,1024,768}, {1024,0,1024,768} };
 	Mix_PlayMusic(m_Bgm, -1);
-	Mix_VolumeMusic(20);
+	Mix_VolumeMusic(40);
 }
 
 void GameState::Update()
@@ -96,16 +108,23 @@ void GameState::Update()
 	{
 		timer++;
 		CdTimer++;
+		if (m_player.alive == false)
+		{
+			ChngTimer++;
+		}
 	}
 	
 	if ((Engine::Instance().KeyDown(SDL_SCANCODE_SPACE) && (CdTimer>50)))
 	{
+		if (m_player.alive == true)
+		{
 			//Spawn bullet
 			m_bullets.push_back(new Bullet({ m_player.m_dst.x + 140,m_player.m_dst.y + 150 }));
 			m_bullets.push_back(new Bullet({ m_player.m_dst.x + 140,m_player.m_dst.y + 62 }));				m_bullets.shrink_to_fit();
 			cout << m_bullets.capacity() << endl;
 			Mix_PlayChannel(-1, m_PShot, 0);
 			CdTimer = 0;
+		}
 	}
 
 	//Background
@@ -195,7 +214,7 @@ void GameState::Update()
 			SDL_DestroyTexture(m_pTexture);
 			Mix_PlayChannel(-1, m_Explosion, 0);
 			m_player.alive = false;
-			StateManager::ChangeState(new LoseState());// Action to change state
+			//StateManager::ChangeState(new LoseState());// Action to change state
 			
 			break;
 		}
@@ -237,10 +256,17 @@ void GameState::Update()
 				SDL_DestroyTexture(m_pTexture);
 				Mix_PlayChannel(-1, m_Explosion, 0);
 				m_player.alive = false;
-				StateManager::ChangeState(new LoseState());// Action to change state
+				//StateManager::ChangeState(new LoseState());// Action to change state
 				
 				break;
 			}
+		}
+	}
+	if (m_player.alive==false)
+	{
+		if(ChngTimer==40)
+		{
+			StateManager::ChangeState(new LoseState());// Action to change state
 		}
 	}
 }
@@ -319,6 +345,8 @@ PauseState::PauseState() {}
 void PauseState::Enter()
 {
 	cout << "Entering Pause state" << endl;
+	TextureManager::Load("img/Resume.png", "Resume");
+	m_objects.emplace("Resume", new PlayButton({ 0,0,400,100 }, { 312,500,400,100 }, "Resume"));
 }
 
 void PauseState::Update()
@@ -337,12 +365,20 @@ void PauseState::Render()
 	SDL_SetRenderDrawColor(Engine::Instance().getRenderer(), 0, 255, 0, 128);
 	SDL_Rect rect = { 256,128,512,512 };
 	SDL_RenderFillRect(Engine::Instance().getRenderer(), &rect);
+	for (auto const& i : m_objects)
+		i.second->Render();
 	State::Render();
 }
 
 void PauseState::Exit()
 {
-
+	TextureManager::Unload("Resume");
+	for (auto& i : m_objects)
+	{
+		delete i.second;
+		i.second = nullptr;
+	}
+	m_objects.clear();
 }
 
 LoseState::LoseState() {}
@@ -350,6 +386,19 @@ LoseState::LoseState() {}
 void LoseState::Enter()
 {
 	cout << "Entering Lose state" << endl;
+	cout << "Entering Title state" << endl;
+	m_lBackG = IMG_LoadTexture(Engine::Instance().getRenderer(), "img/fBG.png");
+	TextureManager::Load("img/MM.png", "Mm");
+	m_objects.emplace("Mm", new PlayButton({ 0,0,400,100 }, { 312,100,400,100 }, "Mm"));
+
+	m_lBg = { {0,0,1024,768}, {0,0,1024,768} };
+
+	Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 2048);
+	Mix_AllocateChannels(16);
+	m_LBgm = Mix_LoadMUS("aud/LBgm.mp3");
+
+	Mix_PlayMusic(m_LBgm, -1);
+	Mix_VolumeMusic(40);
 }
 
 void LoseState::Update()
@@ -361,16 +410,28 @@ void LoseState::Update()
 void LoseState::Render()
 {
 	cout << "Rendering Title state" << endl;
-	SDL_SetRenderDrawColor(Engine::Instance().getRenderer(), 255, 255, 255, 255);
-	SDL_RenderClear(Engine::Instance().getRenderer());
+	//SDL_SetRenderDrawColor(Engine::Instance().getRenderer(), 255, 255, 255, 255);
+	//SDL_RenderClear(Engine::Instance().getRenderer());
 	//for (auto const& i : m_objects)
 	//	i.second->Render();
+	SDL_RenderCopy(Engine::Instance().getRenderer(), m_lBackG, &m_lBg.m_src, &m_lBg.m_dst);
+	for (auto const& i : m_objects)
+		i.second->Render();
 	State::Render();
 }
 
 void LoseState::Exit()
 {
 	cout << "Exiting Title state" << endl;
+	SDL_DestroyTexture(m_lBackG);
+	TextureManager::Unload("Mm");
+	for (auto& i : m_objects)
+	{
+		delete i.second;
+		i.second = nullptr;
+	}
+	m_objects.clear();
+	Mix_FreeMusic(m_LBgm);
 	//TextureManager::Unload("start");
 	//for (auto& i : m_objects)
 	//{
